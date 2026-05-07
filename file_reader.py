@@ -1,5 +1,5 @@
-import PyPDF2
 import os
+import PyPDF2
 
 def read_file(path):
     if not os.path.exists(path):
@@ -11,10 +11,13 @@ def read_file(path):
 
     if path.endswith(".pdf"):
         text = ""
+
         with open(path, "rb") as f:
             reader = PyPDF2.PdfReader(f)
+
             for page in reader.pages:
                 text += page.extract_text() or ""
+
         return text
 
     return None
