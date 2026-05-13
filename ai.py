@@ -4,146 +4,121 @@ from config import API_KEY
 client = OpenAI(api_key=API_KEY)
 
 
-def ask_ai(system_prompt, user_text):
+def ask_ai(system, user):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": user_text[:4000]
-            }
+            {"role": "system", "content": system},
+            {"role": "user", "content": user[:4000]}
         ]
     )
-
     return response.choices[0].message.content
 
 
-# 📊 Анализ резюме
+# 📊 SMART ANALYSIS (НОВОЕ)
+def smart_analysis(resume):
+    return ask_ai("""
+Ты AI карьерный эксперт.
+
+Сделай:
+1. Анализ резюме
+2. Проблемы
+3. Рекомендации
+4. Что улучшить прямо сейчас
+""", resume)
+
+
+# 🎯 AUTO JOB FIT SCORE (НОВОЕ)
+def job_fit_score(resume, job):
+    return ask_ai("""
+Оцени совпадение резюме и вакансии.
+
+Верни:
+- Score 0–100%
+- Почему
+- Чего не хватает
+""", f"{resume}\n\n{job}")
+
+
+# 📈 CV STRENGTH SCORE (НОВОЕ)
+def cv_strength(resume):
+    return ask_ai("""
+Оцени резюме:
+
+1. Структура
+2. Навыки
+3. Опыт
+4. Сильные стороны
+
+Дай итоговый score 0–10
+""", resume)
+
+
+# 🧠 INTERVIEW SIMULATION (НОВОЕ)
+def interview_simulation(resume):
+    return ask_ai("""
+Ты интервьюер.
+
+Проведи собеседование:
+- задай 5 вопросов
+- после ответов оцени кандидата
+- дай фидбек
+""", resume)
+
+
+# ✍️ EXISTING FUNCTIONS (упрощённые)
+
 def analyze_resume(text):
-    return ask_ai("""
-Ты HR эксперт.
-
-Проанализируй резюме:
-1. Оценка
-2. Сильные стороны
-3. Слабые стороны
-4. Как улучшить
-""", text)
+    return ask_ai("HR эксперт: анализ резюме", text)
 
 
-# 🎯 Match с вакансией
-def match_job(resume_text, job_text):
-    return ask_ai("""
-Сравни резюме с вакансией.
-
-Дай:
-1. % совпадения
-2. Недостающие навыки
-3. Советы
-""", f"{resume_text}\n\n{job_text}")
+def match_job(resume, job):
+    return job_fit_score(resume, job)
 
 
-# ✍️ Cover Letter
-def generate_cover_letter(resume_text, job_text):
-    return ask_ai("""
-Напиши профессиональное cover letter
-""", f"{resume_text}\n\n{job_text}")
+def generate_cover_letter(resume, job):
+    return ask_ai("Напиши cover letter", f"{resume}\n\n{job}")
 
 
-# 🤖 ATS
-def ats_check(resume_text):
-    return ask_ai("""
-Оцени ATS совместимость резюме
-""", resume_text)
+def ats_check(resume):
+    return ask_ai("ATS проверка", resume)
 
 
-# 📄 JSON структура
-def extract_data(resume_text):
-    return ask_ai("""
-Верни JSON:
-- skills
-- education
-- experience
-""", resume_text)
+def extract_data(resume):
+    return ask_ai("JSON структура резюме", resume)
 
 
-# 🔑 Keywords
-def keywords_suggestion(resume_text):
-    return ask_ai("""
-Дай ключевые слова для улучшения резюме
-""", resume_text)
+def keywords_suggestion(resume):
+    return ask_ai("Ключевые слова для резюме", resume)
 
 
-# 🧠 Skill level
-def skill_level_analysis(resume_text):
-    return ask_ai("""
-Определи уровень:
-Junior / Middle / Senior
-и объясни почему
-""", resume_text)
+def skill_level_analysis(resume):
+    return ask_ai("Junior/Middle/Senior определение", resume)
 
 
-# ❓ Interview Questions
-def interview_questions(resume_text):
-    return ask_ai("""
-Сгенерируй 10 вопросов для собеседования
-""", resume_text)
+def interview_questions(resume):
+    return ask_ai("Сгенерируй 10 вопросов", resume)
 
 
-# 💰 Salary
-def salary_estimation(resume_text):
-    return ask_ai("""
-Оцени зарплату кандидата
-и укажи диапазон
-""", resume_text)
+def salary_estimation(resume):
+    return ask_ai("Оцени зарплату", resume)
 
 
-# 🌐 LinkedIn
-def linkedin_optimization(resume_text):
-    return ask_ai("""
-Как улучшить LinkedIn профиль?
-""", resume_text)
+def linkedin_optimization(resume):
+    return ask_ai("LinkedIn улучшение", resume)
 
 
-# 🚀 Career Roadmap
-def career_roadmap(resume_text):
-    return ask_ai("""
-Создай roadmap:
-
-1. Текущий уровень
-2. Что учить
-3. План на 6 месяцев
-4. План на 1 год
-""", resume_text)
+def career_roadmap(resume):
+    return ask_ai("Карьерный план", resume)
 
 
-# ✍️ Rewrite Resume
-def rewrite_resume(resume_text):
-    return ask_ai("""
-Полностью перепиши резюме
-в современном профессиональном стиле
-""", resume_text)
+def rewrite_resume(resume):
+    return ask_ai("Перепиши резюме лучше", resume)
 
 
-# ⚠️ Weakness Detector
-def weakness_detector(resume_text):
-    return ask_ai("""
-Найди:
-- слабые навыки
-- пробелы
-- missing skills
-- что мешает росту
-""", resume_text)
+def weakness_detector(resume):
+    return ask_ai("Найди слабые места", resume)
 
 
-# 🌍 Translate Resume
-def translate_resume(resume_text, language):
-    return ask_ai(f"""
-Переведи резюме на язык: {language}
-
-Сохрани профессиональный стиль.
-""", resume_text)
+def translate_resume(resume, lang):
+    return ask_ai(f"Переведи на {lang}", resume)
