@@ -5,8 +5,13 @@ from ai import (
     smart_analysis,
     job_fit_score,
     cv_strength,
-    interview_simulation
+    interview_simulation,
+    skill_gap_analysis,
+    career_recommendations,
+    resume_dashboard,
+    generate_summary
 )
+
 
 def save_result(text):
     with open("result.txt", "w", encoding="utf-8") as f:
@@ -15,12 +20,16 @@ def save_result(text):
 
 def menu():
     print("""
-========== AI CAREER COACH V2 ==========
+========== AI CAREER COACH V3 ==========
 
 1 - Smart Analysis
 2 - Job Fit Score
-3 - CV Strength Score
+3 - CV Strength
 4 - Interview Simulation
+5 - Skill Gap Analysis
+6 - Career Recommendations
+7 - Resume Dashboard
+8 - Summary Generator
 
 0 - Exit
 ========================================
@@ -28,7 +37,7 @@ def menu():
 
 
 def main():
-    print("🚀 AI CAREER COACH V2")
+    print("🚀 AI CAREER COACH V3")
 
     while True:
         menu()
@@ -39,6 +48,7 @@ def main():
             break
 
         resume_path = input("Путь к резюме: ")
+
         resume = read_file(resume_path)
 
         if not resume:
@@ -60,6 +70,19 @@ def main():
         elif choice == "4":
             result = interview_simulation(resume)
 
+        elif choice == "5":
+            job = input("Вставь вакансию:\n")
+            result = skill_gap_analysis(resume, job)
+
+        elif choice == "6":
+            result = career_recommendations(resume)
+
+        elif choice == "7":
+            result = resume_dashboard(resume)
+
+        elif choice == "8":
+            result = generate_summary(resume)
+
         else:
             print("Неверный выбор")
             continue
@@ -68,9 +91,13 @@ def main():
         print(result)
 
         save_result(result)
-        save_history(f"Mode {choice}", result)
 
-        print("\n✅ Сохранено")
+        save_history(
+            f"Mode {choice}",
+            result
+        )
+
+        print("\n✅ Result saved")
 
 
 if __name__ == "__main__":
