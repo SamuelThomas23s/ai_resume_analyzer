@@ -12,106 +12,82 @@ def ask_ai(system, user):
             {"role": "user", "content": user[:4000]}
         ]
     )
-
     return response.choices[0].message.content
 
 
-# 🧠 SMART ANALYSIS
+# 📊 SMART ANALYSIS
 def smart_analysis(resume):
     return ask_ai("""
-Ты AI HR эксперт.
+Ты HR эксперт.
 
 Сделай:
-1. Анализ резюме
-2. Ошибки
-3. Что улучшить
-4. Рекомендации
+- анализ
+- ошибки
+- рекомендации
 """, resume)
 
 
-# 🎯 JOB FIT SCORE
+# 🆚 COMPARE CANDIDATES (НОВОЕ)
+def compare_candidates(resume1, resume2, job):
+    return ask_ai("""
+Сравни двух кандидатов под вакансию.
+
+Верни:
+- кто лучше
+- почему
+- сильные/слабые стороны
+""", f"JOB:\n{job}\n\nCANDIDATE 1:\n{resume1}\n\nCANDIDATE 2:\n{resume2}")
+
+
+# 🧠 HIRING DECISION (НОВОЕ)
+def hiring_decision(resume, job):
+    return ask_ai("""
+Ты HR директор.
+
+Ответь:
+- нанять или нет
+- почему
+- риски
+- потенциал роста
+""", f"{job}\n\n{resume}")
+
+
+# ⚠️ RISK DETECTOR (НОВОЕ)
+def career_risk_detector(resume):
+    return ask_ai("""
+Оцени карьерные риски:
+
+- нестабильность навыков
+- пробелы
+- слабые зоны
+- риски найма
+""", resume)
+
+
+# 📊 EXISTING WRAPPERS
 def job_fit_score(resume, job):
-    return ask_ai("""
-Сравни резюме и вакансию.
-
-Верни:
-- Match Score %
-- Missing Skills
-- Recommendations
-""", f"{resume}\n\n{job}")
+    return ask_ai("Match score 0-100%", f"{resume}\n\n{job}")
 
 
-# 📈 CV STRENGTH
 def cv_strength(resume):
-    return ask_ai("""
-Оцени:
-- structure
-- skills
-- experience
-- ATS readiness
-
-Дай итоговый score 0-10
-""", resume)
+    return ask_ai("CV score 0-10", resume)
 
 
-# 🎤 INTERVIEW
 def interview_simulation(resume):
-    return ask_ai("""
-Проведи mock interview:
-- 5 вопросов
-- оценка кандидата
-- feedback
-""", resume)
+    return ask_ai("Mock interview", resume)
 
 
-# 🆕 SKILL GAP ANALYSIS
 def skill_gap_analysis(resume, job):
-    return ask_ai("""
-Сравни навыки кандидата и вакансии.
-
-Верни:
-1. Missing skills
-2. Priority skills
-3. Что изучать первым
-4. Насколько кандидат подходит
-""", f"{resume}\n\n{job}")
+    return ask_ai("Skill gaps", f"{resume}\n\n{job}")
 
 
-# 🆕 CAREER RECOMMENDATIONS
 def career_recommendations(resume):
-    return ask_ai("""
-На основе резюме:
-
-1. Лучшие карьерные направления
-2. Подходящие профессии
-3. Что изучать дальше
-4. Как увеличить зарплату
-""", resume)
+    return ask_ai("Career recommendations", resume)
 
 
-# 🆕 RESUME DASHBOARD
 def resume_dashboard(resume):
-    return ask_ai("""
-Создай dashboard оценки резюме:
-
-- Skills Score
-- Experience Score
-- ATS Score
-- Readability
-- Final Score
-
-Используй понятный формат.
-""", resume)
+    return ask_ai("Dashboard score", resume)
 
 
-# 🆕 SUMMARY GENERATOR
 def generate_summary(resume):
-    return ask_ai("""
-Создай:
-
-1. Professional Summary
-2. About Me
-3. LinkedIn Bio
-
-на основе резюме.
-""", resume)
+    return ask_ai("Summary + LinkedIn bio", resume)
