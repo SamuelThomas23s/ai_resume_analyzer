@@ -3,13 +3,9 @@ from history import save_history
 
 from ai import (
     smart_analysis,
-    job_fit_score,
-    cv_strength,
-    interview_simulation,
-    skill_gap_analysis,
-    career_recommendations,
-    resume_dashboard,
-    generate_summary
+    compare_candidates,
+    hiring_decision,
+    career_risk_detector
 )
 
 
@@ -20,24 +16,20 @@ def save_result(text):
 
 def menu():
     print("""
-========== AI CAREER COACH V3 ==========
+========== AI HR SYSTEM V4 ==========
 
 1 - Smart Analysis
-2 - Job Fit Score
-3 - CV Strength
-4 - Interview Simulation
-5 - Skill Gap Analysis
-6 - Career Recommendations
-7 - Resume Dashboard
-8 - Summary Generator
+2 - Compare Candidates
+3 - Hiring Decision
+4 - Career Risk Detector
 
 0 - Exit
-========================================
+=====================================
 """)
 
 
 def main():
-    print("🚀 AI CAREER COACH V3")
+    print("🚀 AI HR SYSTEM V4")
 
     while True:
         menu()
@@ -47,41 +39,29 @@ def main():
         if choice == "0":
             break
 
-        resume_path = input("Путь к резюме: ")
-
-        resume = read_file(resume_path)
-
-        if not resume:
-            print("Ошибка файла")
-            continue
-
-        result = ""
-
         if choice == "1":
+            path = input("Резюме:\n")
+            resume = read_file(path)
+
             result = smart_analysis(resume)
 
         elif choice == "2":
-            job = input("Вставь вакансию:\n")
-            result = job_fit_score(resume, job)
+            job = input("Вакансия:\n")
+
+            r1 = read_file(input("Candidate 1:\n"))
+            r2 = read_file(input("Candidate 2:\n"))
+
+            result = compare_candidates(r1, r2, job)
 
         elif choice == "3":
-            result = cv_strength(resume)
+            job = input("Вакансия:\n")
+            resume = read_file(input("Resume:\n"))
+
+            result = hiring_decision(resume, job)
 
         elif choice == "4":
-            result = interview_simulation(resume)
-
-        elif choice == "5":
-            job = input("Вставь вакансию:\n")
-            result = skill_gap_analysis(resume, job)
-
-        elif choice == "6":
-            result = career_recommendations(resume)
-
-        elif choice == "7":
-            result = resume_dashboard(resume)
-
-        elif choice == "8":
-            result = generate_summary(resume)
+            resume = read_file(input("Resume:\n"))
+            result = career_risk_detector(resume)
 
         else:
             print("Неверный выбор")
@@ -91,13 +71,9 @@ def main():
         print(result)
 
         save_result(result)
+        save_history(f"Mode {choice}", result)
 
-        save_history(
-            f"Mode {choice}",
-            result
-        )
-
-        print("\n✅ Result saved")
+        print("\n✅ Saved")
 
 
 if __name__ == "__main__":
