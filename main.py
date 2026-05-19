@@ -1,79 +1,77 @@
+import os
 from file_reader import read_file
-from history import save_history
-
-from ai import (
-    smart_analysis,
-    compare_candidates,
-    hiring_decision,
-    career_risk_detector
-)
+from database import init_db, save_candidate, search_candidates
+from report import generate_pdf_report
+from ai import batch_analysis, extract_score, smart_search
 
 
-def save_result(text):
-    with open("result.txt", "w", encoding="utf-8") as f:
-        f.write(text)
-
-
-def menu():
-    print("""
-========== AI HR SYSTEM V4 ==========
-
-1 - Smart Analysis
-2 - Compare Candidates
-3 - Hiring Decision
-4 - Career Risk Detector
-
-0 - Exit
-=====================================
-""")
+def scan_folder(folder):
+    files = os.listdir(folder)
+    return [os.path.join(folder, f) for f in files if f.endswith(".pdf") or f.endswith(".txt")]
 
 
 def main():
-    print("🚀 AI HR SYSTEM V4")
+    init_db()
+
+    print("🚀 AI HR SYSTEM V5")
 
     while True:
-        menu()
+        print("""
+1 - Batch Analysis (folder)
+2 - Save Candidate
+3 - Search Candidates
+4 - Generate PDF Report
+0 - Exit
+""")
 
-        choice = input("Выбор: ")
+        choice = input("Choice: ")
 
         if choice == "0":
             break
 
+        # 📊 BATCH ANALYSIS
         if choice == "1":
-            path = input("Резюме:\n")
-            resume = read_file(path)
+            folder = input("Folder path: ")
+            files = scan_folder(folder)
 
-            result = smart_analysis(resume)
+            all_text = ""
 
+            for f in files:
+                text = read_file(f)
+                all_text += f"\n\nFILE: {f}\n{text}"
+
+            result = batch_analysis(all_text)
+
+            print(result)
+
+            generate_pdf_report("report.pdf", result)
+
+        # 💾 SAVE CANDIDATE
         elif choice == "2":
-            job = input("Вакансия:\n")
+            name = input("Candidate name: ")
+            resume = read_file(input("Resume path: "))
+            score = extract_score(resume)
 
-            r1 = read_file(input("Candidate 1:\n"))
-            r2 = read_file(input("Candidate 2:\n"))
+            save_candidate(name, score)
 
-            result = compare_candidates(r1, r2, job)
+            print("Saved to DB")
 
+        # 🔍 SEARCH
         elif choice == "3":
-            job = input("Вакансия:\n")
-            resume = read_file(input("Resume:\n"))
+            keyword = input("Search: ")
+            results = search_candidates(keyword)
 
-            result = hiring_decision(resume, job)
+            print(results)
 
+        # 📄 PDF REPORT
         elif choice == "4":
-            resume = read_file(input("Resume:\n"))
-            result = career_risk_detector(resume)
+            text = input("Paste analysis text: ")
+            generate_pdf_report("hr_report.pdf", text)
+
+            print("PDF created")
 
         else:
-            print("Неверный выбор")
-            continue
-
-        print("\n========== RESULT ==========\n")
-        print(result)
-
-        save_result(result)
-        save_history(f"Mode {choice}", result)
-
-        print("\n✅ Saved")
+            print("Invalid")
 
 
 if __name__ == "__main__":
