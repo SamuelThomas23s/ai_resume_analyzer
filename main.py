@@ -1,77 +1,85 @@
-import os
 from file_reader import read_file
-from database import init_db, save_candidate, search_candidates
-from report import generate_pdf_report
-from ai import batch_analysis, extract_score, smart_search
 
+from database import (
+    init_db,
+    get_all_candidates,
+    get_candidates_count,
+    get_best_candidates
+)
 
-def scan_folder(folder):
-    files = os.listdir(folder)
-    return [os.path.join(folder, f) for f in files if f.endswith(".pdf") or f.endswith(".txt")]
+from ai import (
+    talent_match,
+    hiring_recommendation
+)
 
 
 def main():
     init_db()
 
-    print("🚀 AI HR SYSTEM V5")
+    print("🚀 AI HR SYSTEM V6")
 
     while True:
         print("""
-1 - Batch Analysis (folder)
-2 - Save Candidate
-3 - Search Candidates
-4 - Generate PDF Report
+========== DASHBOARD ==========
+
+1 - Show Stats
+2 - Show Best Candidates
+3 - Talent Match (Job → DB)
+4 - Hiring Recommendation
+
 0 - Exit
+===============================
 """)
 
         choice = input("Choice: ")
 
-        if choice == "0":
-            break
-
-        # 📊 BATCH ANALYSIS
+        # 📊 STATS DASHBOARD
         if choice == "1":
-            folder = input("Folder path: ")
-            files = scan_folder(folder)
+            count = get_candidates_count()
+            best = get_best_candidates(3)
 
-            all_text = ""
+            print("\n📊 SYSTEM STATS")
+            print(f"Total candidates: {count}")
+            print("Top 3:")
 
-            for f in files:
-                text = read_file(f)
-                all_text += f"\n\nFILE: {f}\n{text}"
+            for b in best:
+                print(b)
 
-            result = batch_analysis(all_text)
+        # 🏆 BEST CANDIDATES
+        elif choice == "2":
+            best = get_best_candidates(5)
 
+            print("\n🏆 TOP CANDIDATES:")
+            for c in best:
+                print(c)
+
+        # 🎯 TALENT MATCH
+        elif choice == "3":
+            job = input("Paste job description:\n")
+            candidates = get_all_candidates()
+
+            text = "\n".join([str(c) for c in candidates])
+
+            result = talent_match(job, text)
+
+            print("\n========== RESULT ==========\n")
             print(result)
 
-            generate_pdf_report("report.pdf", result)
-
-        # 💾 SAVE CANDIDATE
-        elif choice == "2":
-            name = input("Candidate name: ")
-            resume = read_file(input("Resume path: "))
-            score = extract_score(resume)
-
-            save_candidate(name, score)
-
-            print("Saved to DB")
-
-        # 🔍 SEARCH
-        elif choice == "3":
-            keyword = input("Search: ")
-            results = search_candidates(keyword)
-
-            print(results)
-
-        # 📄 PDF REPORT
+        # ⚡ HIRING DECISION
         elif choice == "4":
-            text = input("Paste analysis text: ")
-            generate_pdf_report("hr_report.pdf", text)
+            candidates = get_all_candidates()
+            text = "\n".join([str(c) for c in candidates])
 
-            print("PDF created")
+            result = hiring_recommendation(text)
+
+            print("\n========== RESULT ==========\n")
+            print(result)
+
+        elif choice == "0":
+            break
 
         else:
-            print("Invalid")
+            print("Invalid choice")
 
 
 if __name__ == "__main__":

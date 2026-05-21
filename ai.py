@@ -14,24 +14,28 @@ def ask_ai(system, user):
     ).choices[0].message.content
 
 
-def batch_analysis(resumes_text):
+# 🧠 TALENT MATCH (НОВОЕ)
+def talent_match(job, candidates_text):
     return ask_ai("""
-Проанализируй список резюме.
+Ты HR AI.
 
-Дай:
-- рейтинг каждого
-- кто лучший
+Найди лучших кандидатов под вакансию.
+
+Верни:
+- TOP кандидатов
+- почему они подходят
+- ranking
+""", f"JOB:\n{job}\n\nCANDIDATES:\n{candidates_text}")
+
+
+# ⚡ HIRING RECOMMENDATION
+def hiring_recommendation(candidates_text):
+    return ask_ai("""
+Ты HR директор.
+
+Скажи:
+- кого нанять
 - почему
-""", resumes_text)
-
-
-def extract_score(resume):
-    return ask_ai("""
-Дай только числовой score 0-100
-""", resume)
-
-
-def smart_search(query, database_text):
-    return ask_ai("""
-Найди лучших кандидатов по запросу:
-""", f"{query}\n\n{database_text}")
+- риски
+- топ 1 кандидат
+""", candidates_text)
