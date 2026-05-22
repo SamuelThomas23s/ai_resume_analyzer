@@ -14,28 +14,26 @@ def ask_ai(system, user):
     ).choices[0].message.content
 
 
-# 🧠 TALENT MATCH (НОВОЕ)
-def talent_match(job, candidates_text):
-    return ask_ai("""
-Ты HR AI.
-
-Найди лучших кандидатов под вакансию.
-
-Верни:
-- TOP кандидатов
-- почему они подходят
-- ranking
-""", f"JOB:\n{job}\n\nCANDIDATES:\n{candidates_text}")
-
-
-# ⚡ HIRING RECOMMENDATION
-def hiring_recommendation(candidates_text):
+# 🧠 AI INTERVIEW REPORT (НОВОЕ)
+def interview_report(interview_text):
     return ask_ai("""
 Ты HR директор.
 
-Скажи:
-- кого нанять
-- почему
-- риски
-- топ 1 кандидат
-""", candidates_text)
+Сделай итог интервью:
+- оценка кандидата
+- сильные стороны
+- слабые стороны
+- hire / no hire
+- причины
+""", interview_text)
+
+
+# 🔔 TOP ALERT SYSTEM
+def top_candidate_alert(candidate_text):
+    return ask_ai("""
+Определи:
+
+- является ли кандидат ТОП
+- стоит ли срочно нанять
+- риск упустить кандидата
+""", candidate_text)

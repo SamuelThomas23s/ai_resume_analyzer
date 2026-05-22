@@ -1,85 +1,83 @@
 from file_reader import read_file
 
-from database import (
-    init_db,
-    get_all_candidates,
-    get_candidates_count,
-    get_best_candidates
-)
+from hr_logs import init_logs, save_decision, get_logs
+from email_generator import generate_email
 
-from ai import (
-    talent_match,
-    hiring_recommendation
-)
+from ai import interview_report, top_candidate_alert
 
 
 def main():
-    init_db()
+    init_logs()
 
-    print("🚀 AI HR SYSTEM V6")
+    print("🚀 AI HR SYSTEM V7")
 
     while True:
         print("""
-========== DASHBOARD ==========
+========== HR CONTROL CENTER ==========
 
-1 - Show Stats
-2 - Show Best Candidates
-3 - Talent Match (Job → DB)
-4 - Hiring Recommendation
+1 - Generate Email
+2 - Save Hiring Decision
+3 - View Logs
+4 - Interview Report
+5 - Top Candidate Alert
 
 0 - Exit
-===============================
+=======================================
 """)
 
         choice = input("Choice: ")
 
-        # 📊 STATS DASHBOARD
+        # 📧 EMAIL GENERATION
         if choice == "1":
-            count = get_candidates_count()
-            best = get_best_candidates(3)
+            name = input("Candidate name: ")
+            job = input("Job: ")
+            status = input("Status (invite/reject/offer): ")
 
-            print("\n📊 SYSTEM STATS")
-            print(f"Total candidates: {count}")
-            print("Top 3:")
+            email = generate_email(name, job, status)
 
-            for b in best:
-                print(b)
+            print("\n📧 EMAIL:\n")
+            print(email)
 
-        # 🏆 BEST CANDIDATES
+        # 🧾 SAVE DECISION
         elif choice == "2":
-            best = get_best_candidates(5)
+            candidate = input("Candidate: ")
+            job = input("Job: ")
+            decision = input("Decision: ")
+            reason = input("Reason: ")
 
-            print("\n🏆 TOP CANDIDATES:")
-            for c in best:
-                print(c)
+            save_decision(candidate, job, decision, reason)
 
-        # 🎯 TALENT MATCH
+            print("Saved ✔")
+
+        # 📜 LOGS
         elif choice == "3":
-            job = input("Paste job description:\n")
-            candidates = get_all_candidates()
+            logs = get_logs()
 
-            text = "\n".join([str(c) for c in candidates])
+            print("\n📊 HR LOGS:")
+            for l in logs:
+                print(l)
 
-            result = talent_match(job, text)
+        # 🧠 INTERVIEW REPORT
+        elif choice == "4":
+            text = input("Paste interview notes:\n")
+            result = interview_report(text)
 
-            print("\n========== RESULT ==========\n")
+            print("\n========== REPORT ==========\n")
             print(result)
 
-        # ⚡ HIRING DECISION
-        elif choice == "4":
-            candidates = get_all_candidates()
-            text = "\n".join([str(c) for c in candidates])
+        # 🔔 TOP ALERT
+        elif choice == "5":
+            text = input("Candidate info:\n")
+            result = top_candidate_alert(text)
 
-            result = hiring_recommendation(text)
-
-            print("\n========== RESULT ==========\n")
+            print("\n🚨 ALERT:\n")
             print(result)
 
         elif choice == "0":
             break
 
         else:
-            print("Invalid choice")
+            print("Invalid")
 
 
 if __name__ == "__main__":
