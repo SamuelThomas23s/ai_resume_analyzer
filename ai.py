@@ -14,26 +14,22 @@ def ask_ai(system, user):
     ).choices[0].message.content
 
 
-# 🧠 AI INTERVIEW REPORT (НОВОЕ)
-def interview_report(interview_text):
+# 🤖 AUTO SCREENING DECISION
+def screening_decision(resume):
     return ask_ai("""
-Ты HR директор.
+Ты HR AI.
 
-Сделай итог интервью:
-- оценка кандидата
-- сильные стороны
-- слабые стороны
-- hire / no hire
-- причины
-""", interview_text)
+Реши:
+- pass / reject
+- причина
+- уровень кандидата
+""", resume)
 
 
-# 🔔 TOP ALERT SYSTEM
-def top_candidate_alert(candidate_text):
+# 📩 AUTO INVITE GENERATOR
+def auto_invite(resume, job):
     return ask_ai("""
-Определи:
+Сгенерируй приглашение на интервью.
 
-- является ли кандидат ТОП
-- стоит ли срочно нанять
-- риск упустить кандидата
-""", candidate_text)
+Коротко, профессионально.
+""", f"{resume}\n\n{job}")
